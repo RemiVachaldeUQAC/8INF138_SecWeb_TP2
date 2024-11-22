@@ -21,7 +21,12 @@ public class CLIHandler {
                         case "-u":
                             String username = args[2];
                             if (args[3].equals("-a")) {
-                                passwordManager.addPassword(username, args[4], args[5]);
+                                if(args.length==6){
+                                    passwordManager.addPassword(username, args[4], args[5]);
+                                }
+                                else {
+                                    System.out.println("invalide number of arguments");
+                                }
                             } else if (args[3].equals("-s")) {
                                 passwordManager.showPassword(username, args[4]);
                             }
