@@ -7,14 +7,17 @@ import java.util.Base64;
 
 public class CryptoUtils {
     public static String generateKey(String masterPassword) throws Exception {
-        byte[] salt = new byte[16];
-        new java.security.SecureRandom().nextBytes(salt);
+        // Utiliser un "salt" fixe (par exemple, un tableau de zéros de 16 octets)
+        byte[] salt = new byte[16]; // Salt fixe : 16 octets, tous initialisés à 0
 
+        // Spécifier la clé dérivée
         KeySpec spec = new PBEKeySpec(masterPassword.toCharArray(), salt, 100000, 256);
         SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
         byte[] key = factory.generateSecret(spec).getEncoded();
         return Base64.getEncoder().encodeToString(key);
     }
+
+
 
     public static String encrypt(String data, String aesKey) throws Exception {
         SecretKeySpec keySpec = new SecretKeySpec(Base64.getDecoder().decode(aesKey), "AES");
