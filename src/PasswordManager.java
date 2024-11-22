@@ -7,29 +7,14 @@ public class PasswordManager {
 
     public void addPassword(String username, String label, String password) throws Exception {
         // Vérifier si l'utilisateur existe
-        if (!dbManager.userExists(username)) {
-            throw new Exception("Error: User not found.");
-        }
+        if (!dbManager.userExists(username)) { throw new Exception("Error: User not found."); }
 
-        // Demander le mot de passe maître
-        System.out.print("Enter " + username + " master password: ");
-        String masterPassword = new java.util.Scanner(System.in).nextLine();
-
-        // Récupérer le mot de passe maître haché et le sel de l'utilisateur
-        String storedHashedPassword = dbManager.getMasterPassword(username); // Récupère le mot de passe maître haché
-        String storedSalt = dbManager.getUserSalt(username); // Récupère le sel de l'utilisateur
-
-        // Hacher le mot de passe saisi avec le sel stocké
-        String hashedInputPassword = UserManager.hashPassword(masterPassword, Base64.getDecoder().decode(storedSalt));
-
-        // Vérifier si le mot de passe maître haché correspond à celui stocké
-        if (!hashedInputPassword.equals(storedHashedPassword)) {
-            throw new Exception("Error: Master password is incorrect.");
-        }
-
-        String aesKey = CryptoUtils.generateKey(storedHashedPassword);
+        // Vérifier si le mot de passe est correct
+        if (!checkPassword(username)) {throw new Exception();}
 
         // Si le mot de passe est correct, chiffrer le nouveau mot de passe
+        String storedHashedPassword = dbManager.getMasterPassword(username);
+        String aesKey = CryptoUtils.generateKey(storedHashedPassword);
         String encryptedPassword = CryptoUtils.encrypt(password, aesKey);
 
         // Sauvegarder le mot de passe chiffré
@@ -37,25 +22,33 @@ public class PasswordManager {
         System.out.println("Password " + label + " successfully saved!");
     }
 
-    /*public void addPassword(String username, String label, String password) throws Exception {
-        String masterPassword = dbManager.getMasterPassword(username);
-        System.out.println("masterPassword: " + masterPassword);
-        String aesKey = CryptoUtils.generateKey(masterPassword);
-        System.out.println("aesKey: " + aesKey);
-
-        String encryptedPassword = CryptoUtils.encrypt(password, aesKey);
-        dbManager.savePassword(username, label, encryptedPassword);
-        System.out.println("Password " + label + " successfully saved!");
-    }*/
-
     public void showPassword(String username, String label) throws Exception {
+        // Vérifier si l'utilisateur existe
+        if (!dbManager.userExists(username)) { throw new Exception("Error: User not found."); }
+
+        // Vérifier si le mot de passe est correct
+        if (!checkPassword(username)) {throw new Exception();}
+
         String masterPassword = dbManager.getMasterPassword(username);
-        System.out.println("masterPassword: " + masterPassword);
         String aesKey = CryptoUtils.generateKey(masterPassword);
-        System.out.println("aesKey: " + aesKey);
 
         String encryptedPassword = dbManager.getPassword(username, label);
         String plainPassword = CryptoUtils.decrypt(encryptedPassword, aesKey);
         System.out.println("Password " + label + " is: " + plainPassword);
+    }
+
+    public boolean checkPassword(String username) throws Exception {
+        // Demander le mot de passe maître
+        System.out.print("Enter "+ username +" master password: ");
+        String masterPassword = new java.util.Scanner(System.in).nextLine();
+
+        // Récupérer le mot de passe maître haché et le sel de l'utilisateur puis hasher le mot de passe Récupéré
+        String storedHashedPassword = dbManager.getMasterPassword(username);
+        String storedSalt = dbManager.getUserSalt(username);
+        String hashedInputPassword = UserManager.hashPassword(masterPassword, Base64.getDecoder().decode(storedSalt));
+
+        // Vérifier si le mot de passe maître haché correspond à celui stocké
+        if(hashedInputPassword.equals(storedHashedPassword)) { return true; }
+        throw new Exception("Error: Master password is incorrect.");
     }
 }

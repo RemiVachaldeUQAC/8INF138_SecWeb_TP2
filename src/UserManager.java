@@ -13,10 +13,7 @@ public class UserManager {
         byte[] salt = new byte[16];
         random.nextBytes(salt);
         String saltBase64 = Base64.getEncoder().encodeToString(salt);
-
-        System.out.println("aaa");
         String hashedPassword = hashPassword(password, salt);
-        System.out.println("hashedPassword: " + hashedPassword);
         dbManager.saveUser(username, hashedPassword, saltBase64);
         System.out.println("User " + username + " registered successfully!");
     }
