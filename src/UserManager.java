@@ -21,7 +21,7 @@ public class UserManager {
         System.out.println("User " + username + " registered successfully!");
     }
 
-    private String hashPassword(String password, byte[] salt) throws Exception {
+    public static String hashPassword(String password, byte[] salt) throws Exception {
         MessageDigest digest = MessageDigest.getInstance("SHA-256");
         digest.update(salt);
         byte[] hashed = digest.digest(password.getBytes());

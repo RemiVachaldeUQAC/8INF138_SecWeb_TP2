@@ -103,4 +103,36 @@ public class DatabaseManager {
             }
         }
     }
+
+    public boolean userExists(String username) throws Exception {
+        try (Connection conn = connect()) {
+            String sql = "SELECT COUNT(*) FROM users WHERE username = ?";
+            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                stmt.setString(1, username);
+                try (ResultSet rs = stmt.executeQuery()) {
+                    // Retourne true si au moins une ligne correspond
+                    return rs.getInt(1) > 0;
+                }
+            }
+        }
+    }
+
+    // Récupère le sel (salt) pour un utilisateur donné
+    public String getUserSalt(String username) throws Exception {
+        try (Connection conn = connect()) {
+            String sql = "SELECT salt FROM users WHERE username = ?";
+            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                stmt.setString(1, username);
+                try (ResultSet rs = stmt.executeQuery()) {
+                    if (rs.next()) {
+                        return rs.getString("salt");
+                    } else {
+                        throw new Exception("Error: User not found.");
+                    }
+                }
+            }
+        }
+    }
+
+
 }
