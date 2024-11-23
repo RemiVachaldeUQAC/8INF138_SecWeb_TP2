@@ -153,6 +153,39 @@ public class DatabaseManager {
         }
     }
 
+    public void updateLabel(String username, String oldLabel, String newLabel) throws Exception {
+        try (Connection conn = connect()) {
+            String sql = "UPDATE passwords SET label = ? WHERE username = ? AND label = ?";
+            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                stmt.setString(1, CryptoUtils.encrypt(newLabel, DB_KEY));
+                stmt.setString(2, CryptoUtils.encrypt(username, DB_KEY));
+                stmt.setString(3, CryptoUtils.encrypt(oldLabel, DB_KEY));
+
+                int rowsAffected = stmt.executeUpdate();
+                if (rowsAffected == 0) {
+                    throw new Exception("Error: No matching label found.");
+                }
+            }
+        }
+    }
+
+    public void updatePassword(String username, String label, String newPassword) throws Exception {
+        try (Connection conn = connect()) {
+            String sql = "UPDATE passwords SET password = ? WHERE username = ? AND label = ?";
+            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                stmt.setString(1, CryptoUtils.encrypt(newPassword, DB_KEY));
+                stmt.setString(2, CryptoUtils.encrypt(username, DB_KEY));
+                stmt.setString(3, CryptoUtils.encrypt(label, DB_KEY));
+
+                int rowsAffected = stmt.executeUpdate();
+                if (rowsAffected == 0) {
+                    throw new Exception("Error: No matching label found.");
+                }
+            }
+        }
+    }
+
+
     public static String getDBKey(){
         Map<String, String> m;
         String s;

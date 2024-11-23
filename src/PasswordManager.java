@@ -15,6 +15,8 @@ public class PasswordManager {
         // Si le mot de passe est correct, chiffrer le nouveau mot de passe
         String storedHashedPassword = dbManager.getMasterPassword(username);
         String aesKey = CryptoUtils.generateKey(storedHashedPassword);
+        System.out.println("storedHashedPassword: " + storedHashedPassword);
+        System.out.println("aesKey: " + aesKey);
         String encryptedPassword = CryptoUtils.encrypt(password, aesKey);
 
         // Sauvegarder le mot de passe chiffré
@@ -31,6 +33,8 @@ public class PasswordManager {
 
         String masterPassword = dbManager.getMasterPassword(username);
         String aesKey = CryptoUtils.generateKey(masterPassword);
+        System.out.println("masterPassword: " + masterPassword);
+        System.out.println("aesKey: " + aesKey);
 
         String encryptedPassword = dbManager.getPassword(username, label);
         String plainPassword = CryptoUtils.decrypt(encryptedPassword, aesKey);
@@ -49,6 +53,47 @@ public class PasswordManager {
         dbManager.deletePassword(username, label);
         System.out.println("Password " + label + " is deleted");
     }
+
+    public void updateLabel(String username, String oldLabel) throws Exception {
+        if (!dbManager.userExists(username)) {
+            throw new Exception("Error: User not found.");
+        }
+
+        if (!checkPassword(username)) {
+            throw new Exception("Error: Master password is incorrect.");
+        }
+
+        System.out.print("Enter the new name for the label: ");
+        String newLabel = new java.util.Scanner(System.in).nextLine();
+
+        dbManager.updateLabel(username, oldLabel, newLabel);
+        System.out.println("Label " + oldLabel + " is updated to " + newLabel);
+    }
+
+    public void updatePassword(String username, String label) throws Exception {
+        if (!dbManager.userExists(username)) {
+            throw new Exception("Error: User not found.");
+        }
+
+        if (!checkPassword(username)) {
+            throw new Exception("Error: Master password is incorrect.");
+        }
+
+        System.out.print("Enter the new password for the label " + label + ": ");
+        String newPassword = new java.util.Scanner(System.in).nextLine();
+
+        // Chiffrement du nouveau mot de passe
+        String masterPassword = dbManager.getMasterPassword(username);
+        String aesKey = CryptoUtils.generateKey(masterPassword);
+        System.out.println("masterPassword: " + masterPassword);
+        System.out.println("aesKey: " + aesKey);
+        String encryptedPassword = CryptoUtils.encrypt(newPassword, aesKey);
+
+        dbManager.updatePassword(username, label, encryptedPassword);
+        System.out.println("Password for label " + label + " is updated.");
+    }
+
+
 
     public boolean checkPassword(String username) throws Exception {
         // Demander le mot de passe maître
