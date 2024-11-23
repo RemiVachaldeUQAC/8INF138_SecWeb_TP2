@@ -115,6 +115,44 @@ Met à jour le mot de passe associé à un label.
 
 ---
 
+## Fonctionnalités Bonus
+Nous avons ajouté des fonctionnalités supplémentaires pour enrichir le projet :
+
+### 1. **Gestion des mots de passe faibles**
+- Lors de l'ajout d'un mot de passe, le programme vérifie si celui-ci est considéré comme faible (trop court, absence de chiffres, caractères spéciaux, etc.).
+- Si un mot de passe faible est détecté, l'utilisateur reçoit un avertissement et doit choisir un mot de passe plus fort.
+
+### 2. **Générateur de mots de passe forts**
+- Un générateur intégré permet de créer des mots de passe forts aléatoires. Ces mots de passe respectent les règles de sécurité (longueur, complexité, etc.).
+- Accessible via la commande lors de la création ou modification d’un mot de passe.
+
+### 3. **Gestion des tentatives avec timeout**
+- L'utilisateur a **3 essais** pour entrer le mot de passe maître. Après 3 échecs, un **timeout de 30 secondes** est imposé avant de réessayer.
+- Cela renforce la sécurité contre les attaques par force brute.
+
+### 4. **Suppression de mots de passe**
+- Les labels (et leur mots de passe associés) peuvent être supprimés avec la commande :
+  ```bash
+  passmanager -u <username> -d <label>
+  ```
+- Cette fonctionnalité respecte les pratiques du CRUD.
+
+### 5. **Modification des labels**
+- Les noms des labels peuvent être modifiés avec la commande :
+  ```bash
+  passmanager -u <username> -ul <label>
+  ```
+- Cette modification respecte les pratiques du CRUD.
+
+### 6. **Modification des mots de passe des labels**
+- Les mots de passe associés à un label peuvent être modifiés avec la commande :
+  ```bash
+  passmanager -u <username> -up <label>
+  ```
+- Cette fonctionnalité respecte également les pratiques du CRUD.
+
+---
+
 ## Licence
 
 Ce projet est sous licence MIT. Consultez le fichier `LICENSE` pour plus d'informations.  
