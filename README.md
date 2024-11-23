@@ -1,130 +1,120 @@
 # Travail Pratique #2: Password Manager
 
 ## Auteurs
-- ABCD1234, NURY, Yanis
-- VACR21030400, VACHALDE, Rémi
+- **Code permanent** : VACR21030400, **Nom** : VACHALDE, **Prénom** : Rémi
+- **Code permanent** : ______, **Nom** : NURY, **Prénom** : Yanis
 
 ## Compatibilité
-- Langage : Java - version 20
-- Outil de gestion des dépendances : Maven
+- **Langage** : Java 20 ou supérieur
+- **Environnement de développement** : IntelliJ IDEA
+
+## Description
+
+**Password Manager** est une application de gestion de mots de passe basée sur une interface de ligne de commande (CLI). Elle permet de créer des utilisateurs, d’ajouter des mots de passe, de consulter des mots de passe existants, ainsi que de modifier ou supprimer des labels et leurs mots de passe.
+
+### Fonctionnalités principales
+1. **Créer un utilisateur** : Enregistrez un utilisateur avec un mot de passe maître.
+2. **Ajouter un mot de passe** : Associez un mot de passe à un label pour un utilisateur donné.
+3. **Afficher un mot de passe** : Récupérez le mot de passe d'un label spécifique.
+4. **Supprimer un label** : Supprimez un label et son mot de passe.
+5. **Modifier un label** : Changez le nom d’un label existant.
+6. **Modifier un mot de passe** : Mettez à jour le mot de passe associé à un label.
 
 ## Utilisation
 
-### Pré-requis
+### Prérequis
+
 1. **Java Development Kit (JDK)**  
-   - Version requise : 17 ou supérieure  
-   - Téléchargement : [OpenJDK](https://jdk.java.net/) ou [Oracle JDK](https://www.oracle.com/java/technologies/javase-jdk17-downloads.html)
-
-2. **Apache Maven**  
-   - Vérifiez que Maven est installé :  
-     ```bash
-     mvn -v
-     ```  
-   - Si non, installez-le en suivant les instructions officielles : [Installation de Maven](https://maven.apache.org/install.html)
-
-3. **SQLite JDBC**  
-   - La bibliothèque `sqlite-jdbc` est automatiquement gérée par Maven grâce au fichier `pom.xml`. Aucune action supplémentaire n'est nécessaire.
-
-4. **Fichier `.env`**  
-   - Créez un fichier `.env` à la racine du projet en suivant le modèle fourni dans `.env.example`.
-   - Exemple :
-     ```plaintext
-     DB_PASSWORD=votre_mot_de_passe
-     ```
-
-### Installation
-1. **Cloner le projet :**  
+   Téléchargez et installez [Java JDK](https://www.oracle.com/java/technologies/javase-downloads.html).  
+   Assurez-vous que Java est bien installé en exécutant :
    ```bash
-   git clone https://github.com/votre-repo/password-manager.git
-   cd password-manager
+   java -version
    ```
+   La version doit être **20 ou supérieure**.
 
-2. **Construire le projet avec Maven :**
-   ```bash
-   mvn clean install
-   ```
+2. **IntelliJ IDEA**  
+   Téléchargez et installez [IntelliJ IDEA Community Edition](https://www.jetbrains.com/idea/download/).
 
-3. **Exécuter le projet :**
-   ```bash
-   java -jar target/password-manager.jar
-   ```
-
-### Fonctionnalités principales
-- **Inscription d'un utilisateur :**
-    - Commande :
-      ```bash
-      passmanager -r <username>
-      ```
-    - Vous serez invité à entrer un mot de passe maître pour l'utilisateur.
-
-- **Ajouter un mot de passe :**
-    - Commande :
-      ```bash
-      passmanager -u <username> -a <label> <password>
-      ```
-    - Vous serez invité à entrer le mot de passe maître pour confirmer.
-
-- **Afficher un mot de passe :**
-    - Commande :
-      ```bash
-      passmanager -u <username> -s <label>
-      ```
-
-### Structure du projet
-- **`src/main/java`**
-    - Contient le code source du projet, structuré en différentes classes telles que `main.java.com.example.passwordmanager.PasswordManager`, `main.java.com.example.passwordmanager.DatabaseManager`, `main.java.com.example.passwordmanager.CryptoUtils`, etc.
-- **`src/main/resources`**
-    - Contient les fichiers de configuration, comme le modèle `.env.example`.
-
-### Exemple d'utilisation
-```bash
-# Inscription d'un utilisateur
-$ passmanager -r alice
-Enter master password: ****
-User alice registered successfully!
-
-# Ajout d'un mot de passe pour alice
-$ passmanager -u alice -a email password123
-Enter alice master password: ****
-Password email successfully saved!
-
-# Affichage du mot de passe enregistré
-$ passmanager -u alice -s email
-Enter alice master password: ****
-Password email is: password123
-```
-
-## Dépendances
-- **sqlite-jdbc** (version 3.43.2.0)  
-  Gestion de la base de données SQLite.
-    - Ajoutée via Maven :
-      ```xml
-      <dependency>
-          <groupId>org.xerial</groupId>
-          <artifactId>sqlite-jdbc</artifactId>
-          <version>3.43.2.0</version>
-      </dependency>
-      ```
-
-- **dotenv-java**  
-  Chargement des variables d'environnement à partir du fichier `.env`.
-    - Ajoutée via Maven :
-      ```xml
-      <dependency>
-          <groupId>io.github.cdimascio</groupId>
-          <artifactId>dotenv-java</artifactId>
-          <version>2.2.0</version>
-      </dependency>
-      ```
+3. **Configuration des bibliothèques**
+    - Les bibliothèques nécessaires sont situées dans le dossier `libs` adjacent au projet.
+    - Configurez-les dans IntelliJ IDEA :
+        - Allez dans **File > Project Structure > Libraries**.
+        - Ajoutez les fichiers `.jar` depuis le dossier `libs`.
 
 ---
 
-## Notes supplémentaires
-- **Journalisation :**  
-  Si vous voyez un message concernant SLF4J ("No SLF4J providers were found"), il s'agit d'une configuration manquante pour la journalisation. Cela n'affecte pas le fonctionnement du projet.
+### Installation
 
-- **Sécurité :**  
-  Veillez à ne pas compromettre votre fichier `.env` lors de la distribution de votre projet.
+1. Clonez ou téléchargez le projet dans votre environnement local. Ou téléchargez le projet sous la forme d'un fichier `.zip` ou `.tar.gz` et décompressez-le.
+   ```bash
+   git clone https://github.com/RemiVachaldeUQAC/8INF138_SecWeb_TP2.git
+   cd passmanager
+   ```
 
-## Contact
-Pour toute question ou contribution, n'hésitez pas à créer une *issue* ou à nous contacter directement.
+2. Ouvrez le projet dans IntelliJ IDEA.
+
+3. Configurez les bibliothèques en suivant les instructions ci-dessus.
+
+4. Exécutez la classe `Main` pour lancer l'application.
+
+---
+
+### Commandes Disponibles
+
+#### 1. Créer un utilisateur
+```bash
+passmanager -r <username>
+> enter_user_password
+```
+Crée un nouvel utilisateur avec un mot de passe maître.
+
+#### 2. Ajouter un mot de passe
+```bash
+passmanager -u <username> -a <label> <password>
+> enter_user_password
+```
+Ajoute un mot de passe pour un label spécifique.
+
+#### 3. Afficher un mot de passe
+```bash
+passmanager -u <username> -s <label>
+> enter_user_password
+```
+Affiche le mot de passe associé à un label.
+
+#### 4. Supprimer un label
+```bash
+passmanager -u <username> -d <label>
+> enter_user_password
+```
+Supprime un label (et son mot de passe) pour un utilisateur donné.
+
+#### 5. Modifier un label
+```bash
+passmanager -u <username> -ul <label>
+> enter_user_password
+> enter_new_label
+```
+Change le nom d'un label existant.
+
+#### 6. Modifier un mot de passe
+```bash
+passmanager -u <username> -up <label>
+> enter_user_password
+> enter_new_password
+```
+Met à jour le mot de passe associé à un label.
+
+---
+
+## Sécurité
+
+- Les mots de passe sont chiffrés avant d'être stockés dans la base de données SQLite.
+- L'accès aux mots de passe est protégé par un mot de passe maître.
+- Les données utilisateur sont également sécurisées avec un système de chiffrement AES.
+
+---
+
+## Licence
+
+Ce projet est sous licence MIT. Consultez le fichier `LICENSE` pour plus d'informations.  
