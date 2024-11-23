@@ -37,6 +37,19 @@ public class PasswordManager {
         System.out.println("Password " + label + " is: " + plainPassword);
     }
 
+    // Méthode pour supprimer un mot de passe
+    public void deletePassword(String username, String label) throws Exception {
+        // Vérification si l'utilisateur existe
+        if (!dbManager.userExists(username)) { throw new Exception("Error: User not found."); }
+
+        // Vérification du mot de passe maître
+        if (!checkPassword(username)) { throw new Exception("Error: Master password is incorrect."); }
+
+        // Supprimer le mot de passe de la base de données
+        dbManager.deletePassword(username, label);
+        System.out.println("Password " + label + " is deleted");
+    }
+
     public boolean checkPassword(String username) throws Exception {
         // Demander le mot de passe maître
         System.out.print("Enter "+ username +" master password: ");

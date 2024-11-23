@@ -137,6 +137,22 @@ public class DatabaseManager {
             }
         }
     }
+
+    // Méthode pour supprimer un mot de passe pour un utilisateur donné et un label spécifique
+    public void deletePassword(String username, String label) throws Exception {
+        try (Connection conn = connect()) {
+            String sql = "DELETE FROM passwords WHERE username = ? AND label = ?";
+            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                stmt.setString(1, CryptoUtils.encrypt(username, DB_KEY));
+                stmt.setString(2, CryptoUtils.encrypt(label, DB_KEY));
+                int rowsAffected = stmt.executeUpdate();
+                if (rowsAffected == 0) {
+                    throw new Exception("Error: No matching password found for the label.");
+                }
+            }
+        }
+    }
+
     public static String getDBKey(){
         Map<String, String> m;
         String s;
@@ -148,7 +164,4 @@ public class DatabaseManager {
         }
         return s;
     }
-
-
-
 }
