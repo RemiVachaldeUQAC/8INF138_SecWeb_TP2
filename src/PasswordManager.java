@@ -56,43 +56,6 @@ public class PasswordManager {
         System.out.println("Password " + label + " is deleted");
     }
 
-//    public boolean checkPassword(String username) throws Exception {
-//        // Demander le mot de passe maître
-//        System.out.print("Enter "+ username +" master password: ");
-//        String masterPassword = new java.util.Scanner(System.in).nextLine();
-//
-//        // Récupérer le mot de passe maître haché et le sel de l'utilisateur puis hasher le mot de passe Récupéré
-//        String storedHashedPassword = dbManager.getMasterPassword(username);
-//        String storedSalt = dbManager.getUserSalt(username);
-//        String hashedInputPassword = UserManager.hashPassword(masterPassword, Base64.getDecoder().decode(storedSalt));
-//
-//        // Vérifier si le mot de passe maître haché correspond à celui stocké
-//        if(hashedInputPassword.equals(storedHashedPassword)) { return true; }
-//        throw new Exception("Error: Master password is incorrect.");
-//    }
-public boolean checkPassword(String username) throws Exception {
-    Scanner scanner = new Scanner(System.in);
-    int attempts = 0; // Compteur de tentatives
-
-    while (attempts < 3) {
-        System.out.print("Enter " + username + " master password: ");
-        String masterPassword = scanner.nextLine();
-    public void updateLabel(String username, String oldLabel) throws Exception {
-        if (!dbManager.userExists(username)) {
-            throw new Exception("Error: User not found.");
-        }
-
-        if (!checkPassword(username)) {
-            throw new Exception("Error: Master password is incorrect.");
-        }
-
-        System.out.print("Enter the new name for the label: ");
-        String newLabel = new java.util.Scanner(System.in).nextLine();
-
-        dbManager.updateLabel(username, oldLabel, newLabel);
-        System.out.println("Label " + oldLabel + " is updated to " + newLabel);
-    }
-
     public void updatePassword(String username, String label) throws Exception {
         if (!dbManager.userExists(username)) {
             throw new Exception("Error: User not found.");
@@ -116,38 +79,68 @@ public boolean checkPassword(String username) throws Exception {
         System.out.println("Password for label " + label + " is updated.");
     }
 
+    public void updateLabel(String username, String oldLabel) throws Exception {
+        if (!dbManager.userExists(username)) {
+            throw new Exception("Error: User not found.");
+        }
 
+        if (!checkPassword(username)) {
+            throw new Exception("Error: Master password is incorrect.");
+        }
 
-    public boolean checkPassword(String username) throws Exception {
+        System.out.print("Enter the new name for the label: ");
+        String newLabel = new java.util.Scanner(System.in).nextLine();
+
+        dbManager.updateLabel(username, oldLabel, newLabel);
+        System.out.println("Label " + oldLabel + " is updated to " + newLabel);
+    }
+
+    /*public boolean checkPassword(String username) throws Exception {
         // Demander le mot de passe maître
         System.out.print("Enter "+ username +" master password: ");
         String masterPassword = new java.util.Scanner(System.in).nextLine();
 
-        // Récupérer le mot de passe maître haché et le sel de l'utilisateur puis hasher le mot de passe récupéré
+        // Récupérer le mot de passe maître haché et le sel de l'utilisateur puis hasher le mot de passe Récupéré
         String storedHashedPassword = dbManager.getMasterPassword(username);
         String storedSalt = dbManager.getUserSalt(username);
         String hashedInputPassword = UserManager.hashPassword(masterPassword, Base64.getDecoder().decode(storedSalt));
 
         // Vérifier si le mot de passe maître haché correspond à celui stocké
-        if (hashedInputPassword.equals(storedHashedPassword)) {
-            return true; // Mot de passe correct
-        }
+        if(hashedInputPassword.equals(storedHashedPassword)) { return true; }
+        throw new Exception("Error: Master password is incorrect.");
+    }*/
 
-        // Incrémenter les tentatives
-        attempts++;
-        System.out.println("Incorrect master password. Attempts left: " + (3 - attempts));
 
-        // Si les 3 tentatives sont épuisées, activer un délai
-        if (attempts == 3) {
-            System.out.println("Too many failed attempts. Please wait 30 seconds before trying again.");
-            try {
-                TimeUnit.SECONDS.sleep(30); // Bloquer l'exécution pendant 30 secondes
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
+    public boolean checkPassword(String username) throws Exception {
+        Scanner scanner = new Scanner(System.in);
+        int attempts = 0; // Compteur de tentatives
+        while (attempts < 3) {
+            System.out.print("Enter " + username + " master password: ");
+            String masterPassword = scanner.nextLine();
+
+            // Récupérer le mot de passe maître haché et le sel de l'utilisateur puis hasher le mot de passe récupéré
+            String storedHashedPassword = dbManager.getMasterPassword(username);
+            String storedSalt = dbManager.getUserSalt(username);
+            String hashedInputPassword = UserManager.hashPassword(masterPassword, Base64.getDecoder().decode(storedSalt));
+
+            // Vérifier si le mot de passe maître haché correspond à celui stocké
+            if (hashedInputPassword.equals(storedHashedPassword)) {
+                return true; // Mot de passe correct
             }
-            attempts = 0; // Réinitialiser les tentatives après le délai
+            // Incrémenter les tentatives
+            attempts++;
+            System.out.println("Incorrect master password. Attempts left: " + (3 - attempts));
+            // Si les 3 tentatives sont épuisées, activer un délai
+            if (attempts == 3) {
+                System.out.println("Too many failed attempts. Please wait 30 seconds before trying again.");
+                try {
+                    TimeUnit.SECONDS.sleep(30); // Bloquer l'exécution pendant 30 secondes
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+                attempts = 0; // Réinitialiser les tentatives après le délai
+            }
         }
+        throw new Exception("Error: Master password is incorrect."); // Si toujours incorrect après le délai
     }
-    throw new Exception("Error: Master password is incorrect."); // Si toujours incorrect après le délai
-}
 }
