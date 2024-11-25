@@ -66,7 +66,7 @@ public class UserManager {
     }
 
     // Méthode pour vérifier si un mot de passe est suffisamment fort
-    private boolean isPasswordStrong(String password) {
+    public static boolean isPasswordStrong(String password) {
         if (password.length() < 8) return false;
         boolean hasUppercase = password.chars().anyMatch(Character::isUpperCase);
         boolean hasLowercase = password.chars().anyMatch(Character::isLowerCase);
@@ -76,7 +76,7 @@ public class UserManager {
     }
 
     // Méthode pour générer un mot de passe fort
-    private String generateStrongPassword() {
+    public static String generateStrongPassword() {
         SecureRandom random = new SecureRandom();
         String upperCase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         String lowerCase = "abcdefghijklmnopqrstuvwxyz";

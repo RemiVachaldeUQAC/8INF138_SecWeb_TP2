@@ -7,6 +7,26 @@ public class PasswordManager {
     private DatabaseManager dbManager = new DatabaseManager();
 
     // Méthode pour ajouter un mot de passe pour un utilisateur
+//    public void addPassword(String username, String label, String password) throws Exception {
+//        // Vérifier si l'utilisateur existe
+//        if (!dbManager.userExists(username)) {
+//            throw new Exception("Error: User not found.");
+//        }
+//
+//        // Vérifier si le mot de passe maître est correct
+//        if (!checkPassword(username)) {
+//            throw new Exception();
+//        }
+//
+//        // Si le mot de passe maître est correct, chiffrer le nouveau mot de passe
+//        String storedHashedPassword = dbManager.getMasterPassword(username);
+//        String aesKey = CryptoUtils.generateKey(storedHashedPassword);
+//        String encryptedPassword = CryptoUtils.encrypt(password, aesKey);
+//
+//        // Sauvegarder le mot de passe chiffré
+//        dbManager.savePassword(username, label, encryptedPassword);
+//        System.out.println("Password " + label + " successfully saved!");
+//    }
     public void addPassword(String username, String label, String password) throws Exception {
         // Vérifier si l'utilisateur existe
         if (!dbManager.userExists(username)) {
@@ -18,7 +38,37 @@ public class PasswordManager {
             throw new Exception();
         }
 
-        // Si le mot de passe maître est correct, chiffrer le nouveau mot de passe
+        // Validation et renforcement du mot de passe
+        Scanner scanner = new Scanner(System.in);
+        while (password == null || !UserManager.isPasswordStrong(password)) {
+            if (password != null && !UserManager.isPasswordStrong(password)) {
+                System.out.println("Password is not strong enough. It must meet the following criteria:");
+                System.out.println("- At least 8 characters long");
+                System.out.println("- Contains at least one uppercase letter");
+                System.out.println("- Contains at least one lowercase letter");
+                System.out.println("- Contains at least one digit");
+                System.out.println("- Contains at least one special character");
+            }
+
+            System.out.print("Enter a new password (or type 'generate' to get a strong password suggestion): ");
+            String input = scanner.nextLine();
+
+            if ("generate".equalsIgnoreCase(input)) {
+                password = UserManager.generateStrongPassword();
+                System.out.println("Suggested strong password: " + password);
+                System.out.print("Do you want to use this password? (yes/no): ");
+                String choice = scanner.nextLine();
+                if ("yes".equalsIgnoreCase(choice)) {
+                    break;
+                } else {
+                    password = null;
+                }
+            } else {
+                password = input;
+            }
+        }
+
+        // Chiffrer le mot de passe validé
         String storedHashedPassword = dbManager.getMasterPassword(username);
         String aesKey = CryptoUtils.generateKey(storedHashedPassword);
         String encryptedPassword = CryptoUtils.encrypt(password, aesKey);
@@ -26,6 +76,58 @@ public class PasswordManager {
         // Sauvegarder le mot de passe chiffré
         dbManager.savePassword(username, label, encryptedPassword);
         System.out.println("Password " + label + " successfully saved!");
+    }
+
+    public void updatePassword(String username, String label) throws Exception {
+        // Vérifier si l'utilisateur existe
+        if (!dbManager.userExists(username)) {
+            throw new Exception("Error: User not found.");
+        }
+
+        // Vérifier si le mot de passe maître est correct
+        if (!checkPassword(username)) {
+            throw new Exception("Error: Master password is incorrect.");
+        }
+
+        // Demander le nouveau mot de passe
+        Scanner scanner = new Scanner(System.in);
+        String newPassword = null;
+        while (newPassword == null || !UserManager.isPasswordStrong(newPassword)) {
+            if (newPassword != null && !UserManager.isPasswordStrong(newPassword)) {
+                System.out.println("Password is not strong enough. It must meet the following criteria:");
+                System.out.println("- At least 8 characters long");
+                System.out.println("- Contains at least one uppercase letter");
+                System.out.println("- Contains at least one lowercase letter");
+                System.out.println("- Contains at least one digit");
+                System.out.println("- Contains at least one special character");
+            }
+
+            System.out.print("Enter a new password for the label " + label + " (or type 'generate' to get a strong password suggestion): ");
+            String input = scanner.nextLine();
+
+            if ("generate".equalsIgnoreCase(input)) {
+                newPassword = UserManager.generateStrongPassword();
+                System.out.println("Suggested strong password: " + newPassword);
+                System.out.print("Do you want to use this password? (yes/no): ");
+                String choice = scanner.nextLine();
+                if ("yes".equalsIgnoreCase(choice)) {
+                    break;
+                } else {
+                    newPassword = null;
+                }
+            } else {
+                newPassword = input;
+            }
+        }
+
+        // Chiffrer le nouveau mot de passe
+        String masterPassword = dbManager.getMasterPassword(username);
+        String aesKey = CryptoUtils.generateKey(masterPassword);
+        String encryptedPassword = CryptoUtils.encrypt(newPassword, aesKey);
+
+        // Mettre à jour le mot de passe dans la base de données
+        dbManager.updatePassword(username, label, encryptedPassword);
+        System.out.println("Password for label " + label + " is updated.");
     }
 
     // Méthode pour afficher un mot de passe pour un utilisateur
@@ -68,30 +170,31 @@ public class PasswordManager {
     }
 
     // Méthode pour mettre à jour un mot de passe
-    public void updatePassword(String username, String label) throws Exception {
-        // Vérifier si l'utilisateur existe
-        if (!dbManager.userExists(username)) {
-            throw new Exception("Error: User not found.");
-        }
+//    public void updatePassword(String username, String label) throws Exception {
+//        // Vérifier si l'utilisateur existe
+//        if (!dbManager.userExists(username)) {
+//            throw new Exception("Error: User not found.");
+//        }
+//
+//        // Vérifier si le mot de passe maître est correct
+//        if (!checkPassword(username)) {
+//            throw new Exception("Error: Master password is incorrect.");
+//        }
+//
+//        // Demander le nouveau mot de passe
+//        System.out.print("Enter the new password for the label " + label + ": ");
+//        String newPassword = new Scanner(System.in).nextLine();
+//
+//        // Chiffrer le nouveau mot de passe
+//        String masterPassword = dbManager.getMasterPassword(username);
+//        String aesKey = CryptoUtils.generateKey(masterPassword);
+//        String encryptedPassword = CryptoUtils.encrypt(newPassword, aesKey);
+//
+//        // Mettre à jour le mot de passe dans la base de données
+//        dbManager.updatePassword(username, label, encryptedPassword);
+//        System.out.println("Password for label " + label + " is updated.");
+//    }
 
-        // Vérifier si le mot de passe maître est correct
-        if (!checkPassword(username)) {
-            throw new Exception("Error: Master password is incorrect.");
-        }
-
-        // Demander le nouveau mot de passe
-        System.out.print("Enter the new password for the label " + label + ": ");
-        String newPassword = new Scanner(System.in).nextLine();
-
-        // Chiffrer le nouveau mot de passe
-        String masterPassword = dbManager.getMasterPassword(username);
-        String aesKey = CryptoUtils.generateKey(masterPassword);
-        String encryptedPassword = CryptoUtils.encrypt(newPassword, aesKey);
-
-        // Mettre à jour le mot de passe dans la base de données
-        dbManager.updatePassword(username, label, encryptedPassword);
-        System.out.println("Password for label " + label + " is updated.");
-    }
 
     // Méthode pour mettre à jour le nom d'une étiquette
     public void updateLabel(String username, String oldLabel) throws Exception {
